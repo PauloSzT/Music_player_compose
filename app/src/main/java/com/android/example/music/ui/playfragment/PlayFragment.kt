@@ -31,7 +31,7 @@ class PlayFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MusicAppTheme {
-                    PlayView()
+                    PlayView(playUiState = activityViewModel.playUiState)
                 }
             }
         }

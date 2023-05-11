@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.example.music.broadcast.MusicBroadcastReceiver
@@ -12,6 +11,7 @@ import com.android.example.music.models.Song
 import com.android.example.music.models.SongProvider
 import com.android.example.music.player.MusicPlayerImplementation
 import com.android.example.music.ui.homefragment.HomeUiState
+import com.android.example.music.ui.playfragment.PlayUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -23,7 +23,15 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     val songsList = _songsList.asStateFlow()
     private val _playList = MutableStateFlow<List<Song>>(emptyList())
     val playList = _playList.asStateFlow()
+    private val _seekbarPosition = MutableStateFlow<Pair<Float,Float>>(Pair(0f,0f))
+    val seekbarPosition = _seekbarPosition.asStateFlow()
+
     val homeUiState = HomeUiState(playList)
+    val playUiState = PlayUiState(seekbarPosition,::onSeekbarChange)
+
+    fun onSeekbarChange (position: Float){
+        musicPlayer?.seekTo(position.toInt())
+    }
 
     fun initializePlayer() {
         val list = songProvider.getSongsList().mapIndexed { index, item ->
@@ -50,7 +58,8 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
                 _playList.value,
                 viewModelScope,
                 ::sendBroadcast,
-                ::onUpdatePlayList
+                ::onUpdatePlayList,
+                ::updateSeekbar
             )
     }
 
@@ -63,6 +72,10 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
 
     private fun onUpdatePlayList(list: List<Song>){
         _playList.value = list
+    }
+
+    private fun updateSeekbar(currentPosition: Float , maxDuration: Float){
+        _seekbarPosition.value = Pair(currentPosition , maxDuration)
     }
 
     companion object {

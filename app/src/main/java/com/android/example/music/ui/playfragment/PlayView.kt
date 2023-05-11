@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,11 +27,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.android.example.music.R
-import com.android.example.music.ui.components.SeekBarDemo
+import com.android.example.music.ui.components.MusicSeekbar
 
 
 @Composable
-fun PlayView() {
+fun PlayView(playUiState: PlayUiState) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -66,6 +67,7 @@ fun PlayView() {
                     )
                 }
             }
+            Divider(modifier = Modifier.size(3.dp), color = Color.LightGray)
             Image(
                 modifier = Modifier
                     .height(350.dp),
@@ -78,7 +80,7 @@ fun PlayView() {
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
-            SeekBarDemo()
+            MusicSeekbar(playUiState)
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { /*TODO*/ },

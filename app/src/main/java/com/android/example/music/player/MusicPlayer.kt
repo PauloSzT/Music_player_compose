@@ -1,11 +1,13 @@
 package com.android.example.music.player
 
+import android.icu.text.Transliterator
 import android.media.MediaPlayer
 import androidx.lifecycle.MutableLiveData
 import com.android.example.music.models.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 
 interface MusicPlayer {
@@ -27,13 +29,13 @@ class MusicPlayerImplementation(
     var playList: List<Song>,
     private val viewModelScope: CoroutineScope,
     val sendBroadcastCallback: (String) -> Unit,
-    val updatePlayList: (List<Song>) -> Unit
+    val updatePlayList: (List<Song>) -> Unit,
+    val updateSeekbar: (Float, Float) -> Unit
 ) : MusicPlayer {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var currentSongIndex: Int = 0
     val isShuffle = MutableLiveData(false)
-    val seekBarPosition = MutableLiveData<Pair<Int, Int>>()
     private var isSeekBarRunning = false
 
 
@@ -141,7 +143,7 @@ class MusicPlayerImplementation(
         viewModelScope.launch {
             isSeekBarRunning = true
             while (isSeekBarRunning) {
-                seekBarPosition.value = Pair(mediaPlayer.currentPosition, mediaPlayer.duration)
+                updateSeekbar(mediaPlayer.currentPosition.toFloat(), mediaPlayer.duration.toFloat())
                 delay(1000)
             }
         }
