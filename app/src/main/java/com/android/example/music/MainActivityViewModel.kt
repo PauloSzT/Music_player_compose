@@ -19,17 +19,27 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
 
     var musicPlayer: MusicPlayerImplementation? = null
     private val songProvider: SongProvider = SongProvider(application.contentResolver)
+
     private val _songsList = MutableStateFlow<List<Song>>(emptyList())
     val songsList = _songsList.asStateFlow()
+
     private val _playList = MutableStateFlow<List<Song>>(emptyList())
-    val playList = _playList.asStateFlow()
-    private val _seekbarPosition = MutableStateFlow<Pair<Float,Float>>(Pair(0f,0f))
-    val seekbarPosition = _seekbarPosition.asStateFlow()
+    private val playList = _playList.asStateFlow()
+
+    private val _seekbarPosition = MutableStateFlow(Pair(0f, 0f))
+    private val seekbarPosition = _seekbarPosition.asStateFlow()
+
+    private val _song = MutableStateFlow<Song?>(null)
+    private val song = _song.asStateFlow()
+
+    private val _isPlaying = MutableStateFlow(false)
+    private val isPlaying = _isPlaying.asStateFlow()
 
     val homeUiState = HomeUiState(playList)
-    val playUiState = PlayUiState(seekbarPosition,::onSeekbarChange)
+    val playUiState = PlayUiState(song, isPlaying, seekbarPosition, ::onSeekbarChange)
+//    val settingsUiState = SettingsUiState()
 
-    fun onSeekbarChange (position: Float){
+    private fun onSeekbarChange(position: Float) {
         musicPlayer?.seekTo(position.toInt())
     }
 
@@ -59,7 +69,8 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
                 viewModelScope,
                 ::sendBroadcast,
                 ::onUpdatePlayList,
-                ::updateSeekbar
+                ::updateSeekbar,
+                ::updateCurrentSong
             )
     }
 
@@ -70,12 +81,20 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
         application.sendBroadcast(intent)
     }
 
-    private fun onUpdatePlayList(list: List<Song>){
+    private fun onUpdatePlayList(list: List<Song>) {
         _playList.value = list
     }
 
-    private fun updateSeekbar(currentPosition: Float , maxDuration: Float){
-        _seekbarPosition.value = Pair(currentPosition , maxDuration)
+    private fun updateSeekbar(currentPosition: Float, maxDuration: Float) {
+        _seekbarPosition.value = Pair(currentPosition, maxDuration)
+    }
+
+    private fun updateCurrentSong(song: Song) {
+        _song.value = song
+    }
+
+    fun pauseOrResumeCurrentSong(value: Boolean) {
+        _isPlaying.value = value
     }
 
     companion object {

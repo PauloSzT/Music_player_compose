@@ -2,6 +2,7 @@ package com.android.example.music.player
 
 import android.icu.text.Transliterator
 import android.media.MediaPlayer
+import androidx.compose.animation.core.updateTransition
 import androidx.lifecycle.MutableLiveData
 import com.android.example.music.models.Song
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +15,8 @@ interface MusicPlayer {
 
     fun playSong(songIndex: Int)
     fun pauseOrResumeCurrentSong(): Boolean
-    fun skipPrev() : String
-    fun skipNext() : String
+    fun skipPrev()
+    fun skipNext()
     fun toggleShuffle()
     fun playList(): Int
     fun seekTo(position: Int)
@@ -30,10 +31,11 @@ class MusicPlayerImplementation(
     private val viewModelScope: CoroutineScope,
     val sendBroadcastCallback: (String) -> Unit,
     val updatePlayList: (List<Song>) -> Unit,
-    val updateSeekbar: (Float, Float) -> Unit
+    val updateSeekbar: (Float, Float) -> Unit,
+    val updateCurrentSong: (Song) -> Unit
 ) : MusicPlayer {
 
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
+    var mediaPlayer: MediaPlayer = MediaPlayer()
     private var currentSongIndex: Int = 0
     val isShuffle = MutableLiveData(false)
     private var isSeekBarRunning = false
@@ -47,6 +49,7 @@ class MusicPlayerImplementation(
         mediaPlayer.start()
         currentSongIndex = songIndex
         sendBroadcastCallback(playList[currentSongIndex].name)
+        updateCurrentSong(playList[currentSongIndex])
         initializeSeekBar()
     }
 
@@ -60,28 +63,28 @@ class MusicPlayerImplementation(
         }
     }
 
-    override fun skipPrev() : String{
+    override fun skipPrev(){
         if (currentSongIndex == 0) {
             playSong(playList.size - 1)
-            return playList[playList.size - 1].name
+            updateCurrentSong(playList[playList.size - 1])
         } else {
             playSong(currentSongIndex - 1)
-            return playList[currentSongIndex].name
+            updateCurrentSong(playList[currentSongIndex])
         }
     }
 
-    override fun skipNext() : String {
+    override fun skipNext(){
         if (isShuffle.value == true) {
             val random = (playList.indices).random()
             playSong(random)
-            return playList[random].name
+            updateCurrentSong(playList[random])
         } else {
             if (currentSongIndex == playList.size - 1) {
                 playSong(0)
-                return playList[0].name
+                 updateCurrentSong(playList[0])
             } else {
                 playSong(currentSongIndex + 1)
-                return playList[currentSongIndex].name
+                updateCurrentSong(playList[currentSongIndex])
             }
         }
     }

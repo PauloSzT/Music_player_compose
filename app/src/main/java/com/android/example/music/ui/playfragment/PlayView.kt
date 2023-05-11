@@ -20,6 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,10 +35,22 @@ import com.android.example.music.ui.components.MusicSeekbar
 
 
 @Composable
-fun PlayView(playUiState: PlayUiState) {
+fun PlayView(
+    playUiState: PlayUiState,
+    onSettingsIconClicked: () -> Unit,
+    onPlayButtonClicked: () -> Unit,
+    onBackwardButtonClicked: () -> Unit,
+    onForwardButtonClicked: () -> Unit,
+) {
+    val song by playUiState.song.collectAsState()
+    val isPlaying by playUiState.isPlaying.collectAsState()
+
+    val actionIcon by remember(isPlaying) {
+        mutableStateOf(if (isPlaying) R.drawable.ic_play_arrow else R.drawable.ic_pause_circle)
+    }
+
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -53,13 +69,10 @@ fun PlayView(playUiState: PlayUiState) {
                     text = "Music Media Player",
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
                 IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .padding(end = 8.dp)
+                    onClick = { onSettingsIconClicked() }, modifier = Modifier.padding(end = 8.dp)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_settings),
@@ -69,13 +82,12 @@ fun PlayView(playUiState: PlayUiState) {
             }
             Divider(modifier = Modifier.size(3.dp), color = Color.LightGray)
             Image(
-                modifier = Modifier
-                    .height(350.dp),
+                modifier = Modifier.height(350.dp),
                 painter = painterResource(R.drawable.music),
                 contentDescription = null
             )
             Text(
-                text = "songName",
+                text = song?.name ?: "",
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
@@ -83,11 +95,13 @@ fun PlayView(playUiState: PlayUiState) {
             MusicSeekbar(playUiState)
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { onPlayButtonClicked() },
                 elevation = ButtonDefaults.buttonElevation(10.dp),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_pause_circle),
+                    painter = painterResource(
+                        id = actionIcon
+                    ),
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.size(32.dp)
@@ -102,7 +116,7 @@ fun PlayView(playUiState: PlayUiState) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { onBackwardButtonClicked() },
                     elevation = ButtonDefaults.buttonElevation(10.dp)
                 ) {
                     Icon(
@@ -114,7 +128,7 @@ fun PlayView(playUiState: PlayUiState) {
                 }
                 Spacer(modifier = Modifier.width(60.dp))
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { onForwardButtonClicked() },
                     elevation = ButtonDefaults.buttonElevation(10.dp)
                 ) {
                     Icon(
