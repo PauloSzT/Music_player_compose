@@ -12,6 +12,7 @@ import com.android.example.music.models.SongProvider
 import com.android.example.music.player.MusicPlayerImplementation
 import com.android.example.music.ui.homefragment.HomeUiState
 import com.android.example.music.ui.playfragment.PlayUiState
+import com.android.example.music.ui.settingsfragment.SettingsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -19,25 +20,17 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
 
     var musicPlayer: MusicPlayerImplementation? = null
     private val songProvider: SongProvider = SongProvider(application.contentResolver)
+    private val songsList = MutableStateFlow<List<Song>>(emptyList())
+    private val playList = MutableStateFlow<List<Song>>(emptyList())
+    private val seekbarPosition = MutableStateFlow(Pair(0f, 0f))
+    private val song = MutableStateFlow<Song?>(null)
+    private val isPlaying = MutableStateFlow(false)
+    private val isShuffle = MutableStateFlow(false)
 
-    private val _songsList = MutableStateFlow<List<Song>>(emptyList())
-    val songsList = _songsList.asStateFlow()
-
-    private val _playList = MutableStateFlow<List<Song>>(emptyList())
-    private val playList = _playList.asStateFlow()
-
-    private val _seekbarPosition = MutableStateFlow(Pair(0f, 0f))
-    private val seekbarPosition = _seekbarPosition.asStateFlow()
-
-    private val _song = MutableStateFlow<Song?>(null)
-    private val song = _song.asStateFlow()
-
-    private val _isPlaying = MutableStateFlow(false)
-    private val isPlaying = _isPlaying.asStateFlow()
 
     val homeUiState = HomeUiState(playList)
     val playUiState = PlayUiState(song, isPlaying, seekbarPosition, ::onSeekbarChange)
-//    val settingsUiState = SettingsUiState()
+    val settingsUiState = SettingsUiState(songsList)
 
     private fun onSeekbarChange(position: Float) {
         musicPlayer?.seekTo(position.toInt())
@@ -55,23 +48,28 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
                 path = "$CHILD_ROUTE$item",
                 index = index,
                 name = trackName,
-                isInPlaylist = (0..2).contains(index)
+                isInPlaylist = MutableStateFlow((0..2).contains(index))
             )
         }
-        _songsList.value = list
-        _playList.value = list.filter {
-            it.isInPlaylist
+        songsList.value = list
+        playList.value = list.filter {
+            it.isInPlaylist.value
         }
         musicPlayer =
             MusicPlayerImplementation(
-                _songsList.value,
-                _playList.value,
+                songsList.value,
+                playList.value,
                 viewModelScope,
                 ::sendBroadcast,
                 ::onUpdatePlayList,
                 ::updateSeekbar,
-                ::updateCurrentSong
+                ::updateCurrentSong,
+                ::updateSongList
             )
+    }
+
+    private fun updateSongList(songs: List<Song>) {
+        songsList.value = songs
     }
 
     private fun sendBroadcast(songName: String) {
@@ -82,19 +80,19 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     }
 
     private fun onUpdatePlayList(list: List<Song>) {
-        _playList.value = list
+        playList.value = list
     }
 
     private fun updateSeekbar(currentPosition: Float, maxDuration: Float) {
-        _seekbarPosition.value = Pair(currentPosition, maxDuration)
+        seekbarPosition.value = Pair(currentPosition, maxDuration)
     }
 
-    private fun updateCurrentSong(song: Song) {
-        _song.value = song
+    private fun updateCurrentSong(newSong: Song) {
+        song.value = newSong
     }
 
     fun pauseOrResumeCurrentSong(value: Boolean) {
-        _isPlaying.value = value
+        isPlaying.value = value
     }
 
     companion object {

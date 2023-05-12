@@ -20,19 +20,19 @@ interface MusicPlayer {
     fun toggleShuffle()
     fun playList(): Int
     fun seekTo(position: Int)
-    fun addSong(songIndex: Int)
-    fun removeSong(songIndex: Int)
+    fun addSongOrRemove(songIndex: Int)
     fun destroyPlayer()
 }
 
 class MusicPlayerImplementation(
-    var songsList: List<Song>,
+    private var songsList: List<Song>,
     var playList: List<Song>,
     private val viewModelScope: CoroutineScope,
     val sendBroadcastCallback: (String) -> Unit,
     val updatePlayList: (List<Song>) -> Unit,
     val updateSeekbar: (Float, Float) -> Unit,
-    val updateCurrentSong: (Song) -> Unit
+    val updateCurrentSong: (Song) -> Unit,
+    val updateSongList: (List<Song>) -> Unit
 ) : MusicPlayer {
 
     var mediaPlayer: MediaPlayer = MediaPlayer()
@@ -115,26 +115,16 @@ class MusicPlayerImplementation(
         }
     }
 
-    override fun addSong(songIndex: Int) {
-        songsList[songIndex].isInPlaylist = true
+    override fun addSongOrRemove(songIndex: Int) {
+        songsList[songIndex].isInPlaylist.value = !songsList[songIndex].isInPlaylist.value
         playList = songsList.filter{
-            it.isInPlaylist == true
+            it.isInPlaylist.value
         }.mapIndexed { index, song ->
             song.index = index
             song
         }
         updatePlayList(playList)
-    }
-
-    override fun removeSong(songIndex: Int) {
-        songsList[songIndex].isInPlaylist = false
-        playList = songsList.filter{
-            it.isInPlaylist== false
-        }.mapIndexed { index, song ->
-            song.index = index
-            song
-        }
-        updatePlayList(playList)
+        updateSongList(songsList)
     }
 
     override fun destroyPlayer() {

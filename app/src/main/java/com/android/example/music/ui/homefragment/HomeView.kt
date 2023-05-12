@@ -1,6 +1,5 @@
 package com.android.example.music.ui.homefragment
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,15 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.android.example.music.MainActivityViewModel
 import com.android.example.music.R
-import com.android.example.music.models.Song
 import com.android.example.music.ui.components.SongRow
-import com.android.example.music.ui.theme.MusicAppTheme
 import com.android.example.music.ui.theme.NotoSerif
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun HomeView(
@@ -45,7 +39,8 @@ fun HomeView(
     onSettingsIconClicked: () -> Unit,
     onShuffleIconToggled: () -> Unit
 ) {
-    val songsList by homeUiState.playList.collectAsState()
+    val playList by homeUiState.playList.collectAsState()
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -131,37 +126,17 @@ fun HomeView(
             )
             LazyColumn(
             ) {
-                songsList.forEach { song ->
+                playList.forEach { song ->
                     item {
-                        SongRow(song.name, song.index) { onSongClicked(song.name, song.index) }
+                        SongRow(
+                            song.name,
+                            song.index,
+                            isSelected = song.isInPlaylist,
+                            isForSettings = false
+                        ) { onSongClicked(song.name, song.index) }
                     }
                 }
             }
-        }
-    }
-}
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun HomeViewPreview() {
-    val homeUiState = HomeUiState(
-        MutableStateFlow<List<Song>>(
-            listOf(
-                Song("", 0, "cancion1", true),
-                Song("", 0, "cancion2", true),
-                Song("", 0, "cancion3", true)
-            )
-        )
-    )
-    MusicAppTheme {
-        HomeView(
-            homeUiState = homeUiState,
-            onSongClicked = { _, _ -> },
-            onPlayListButtonClicked = {},
-            onSettingsIconClicked = {}) {
-
         }
     }
 }

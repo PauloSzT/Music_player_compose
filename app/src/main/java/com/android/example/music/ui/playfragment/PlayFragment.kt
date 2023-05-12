@@ -29,9 +29,10 @@ class PlayFragment : Fragment() {
                         playUiState = activityViewModel.playUiState,
                         onSettingsIconClicked = {navigateToSettingsFragment()},
                         onPlayButtonClicked = {
-                            val isPlaying = activityViewModel.musicPlayer?.pauseOrResumeCurrentSong()
-                            if (isPlaying != null) {
-                                activityViewModel.pauseOrResumeCurrentSong(isPlaying)
+                            activityViewModel.musicPlayer?.pauseOrResumeCurrentSong()?.let {
+                                activityViewModel.pauseOrResumeCurrentSong(
+                                    it
+                                )
                             }
                         },
                         onBackwardButtonClicked = {activityViewModel.musicPlayer?.skipPrev()},

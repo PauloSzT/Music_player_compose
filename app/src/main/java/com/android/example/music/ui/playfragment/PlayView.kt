@@ -45,9 +45,6 @@ fun PlayView(
     val song by playUiState.song.collectAsState()
     val isPlaying by playUiState.isPlaying.collectAsState()
 
-    val actionIcon by remember(isPlaying) {
-        mutableStateOf(if (isPlaying) R.drawable.ic_play_arrow else R.drawable.ic_pause_circle)
-    }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -100,7 +97,7 @@ fun PlayView(
             ) {
                 Icon(
                     painter = painterResource(
-                        id = actionIcon
+                        id = if (isPlaying) R.drawable.ic_play_arrow else R.drawable.ic_pause_circle
                     ),
                     contentDescription = null,
                     tint = Color.White,

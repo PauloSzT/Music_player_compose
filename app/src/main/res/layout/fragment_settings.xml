@@ -8,40 +8,9 @@
     android:background="@color/background_app"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/button_backContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-        <TextView
-            style="@style/MarqueeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SETTINGS:"
-            android:textColor="@color/white"
-            android:textSize="35sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/songs_list"
-            android:textSize="24sp" />
-
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/song_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="20dp" />
 </LinearLayout>

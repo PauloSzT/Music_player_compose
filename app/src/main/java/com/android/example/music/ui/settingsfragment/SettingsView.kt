@@ -1,5 +1,6 @@
 package com.android.example.music.ui.settingsfragment
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,26 +17,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.android.example.music.MainActivityViewModel
 import com.android.example.music.ui.components.SongRow
 import com.android.example.music.ui.theme.NotoSerif
 
 @Composable
-fun SettingsView (
-    viewModel: MainActivityViewModel,
-    onSongClicked: (Int) -> Unit
-){
-    val songsList by viewModel.songsList.collectAsState()
+fun SettingsView(
+    settingsUiState: SettingsUiState,
+    onSongClicked: (Int) -> Unit,
+) {
+    val songsList by settingsUiState.songList.collectAsState()
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
-    ){
-        Column (
+    ) {
+        Column(
             modifier = Modifier
                 .padding(8.dp)
-        ){
+        ) {
             Text(
-                text = "HOME PANEL",
+                text = "SETTINGS",
                 fontFamily = NotoSerif,
                 color = Color.White,
                 style = MaterialTheme.typography.titleLarge,
@@ -58,7 +59,12 @@ fun SettingsView (
             ) {
                 songsList.forEach { song ->
                     item {
-                        SongRow(song.name, song.index, onSongClicked)
+                        SongRow(
+                            song.name,
+                            song.index,
+                            isSelected = song.isInPlaylist,
+                            isForSettings = true
+                        ) { onSongClicked(song.index) }
                     }
                 }
             }
