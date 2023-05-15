@@ -94,7 +94,7 @@ fun PlayView(
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if (isPlaying) R.drawable.ic_play_arrow else R.drawable.ic_pause_circle
+                        id = if (isPlaying) R.drawable.ic_pause_circle else R.drawable.ic_play_arrow
                     ),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,

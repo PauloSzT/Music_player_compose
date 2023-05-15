@@ -2,9 +2,7 @@ package com.android.example.music.models
 
 import android.content.ContentResolver
 
-class SongProvider(private val contentResolver: ContentResolver) {
-
-    private val newSongsList = mutableListOf<String>()
+class SongProvider(contentResolver: ContentResolver) {
 
     private val cursor = contentResolver.query(
         RawFilesProvider.CONTENT_URI,
@@ -15,6 +13,7 @@ class SongProvider(private val contentResolver: ContentResolver) {
     )
 
     fun getSongsList(): List<String> {
+        val newSongsList = mutableListOf<String>()
 
         cursor?.let {
             val uriColumn = cursor.getColumnIndex(RawFilesProvider.URI)

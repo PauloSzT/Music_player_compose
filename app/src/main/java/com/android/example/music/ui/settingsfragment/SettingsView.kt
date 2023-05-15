@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.android.example.music.ui.components.Refresher
 import com.android.example.music.ui.components.SongRow
 import com.android.example.music.ui.theme.NotoSerif
 
@@ -24,45 +25,48 @@ fun SettingsView(
     onSongClicked: (Int) -> Unit,
 ) {
     val songsList by settingsUiState.songList.collectAsState()
-
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
+    Refresher(
+        isLoadingState = settingsUiState.isLoading,
+        refresh = settingsUiState.refresh
     ) {
-        Column(
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
+                .fillMaxSize()
         ) {
-            Text(
-                text = "SETTINGS",
-                fontFamily = NotoSerif,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge,
+            Column(
                 modifier = Modifier
-                    .padding(start = 8.dp)
-            )
-            Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                modifier = Modifier
-                    .padding(vertical = 16.dp, horizontal = 8.dp),
-                text = "Songs List",
-                color = MaterialTheme.colorScheme.primary,
-                fontFamily = NotoSerif,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
-            LazyColumn(
+                    .padding(vertical = 8.dp)
             ) {
-                songsList.forEach { song ->
-                    item {
-                        SongRow(
-                            song.name,
-                            song.index,
-                            isInPlaylist = song.isInPlaylist,
-                            isForSettings = true
-                        ) { onSongClicked(song.index) }
+                Text(
+                    text = "SETTINGS",
+                    fontFamily = NotoSerif,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                )
+                Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp, horizontal = 8.dp),
+                    text = "Songs List",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontFamily = NotoSerif,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
+                LazyColumn(
+                ) {
+                    songsList.forEachIndexed { index, song ->
+                        item {
+                            SongRow(
+                                song.name,
+                                isInPlaylist = song.isInPlaylist,
+                                isForSettings = true
+                            ) { onSongClicked(index) }
+                        }
                     }
                 }
             }

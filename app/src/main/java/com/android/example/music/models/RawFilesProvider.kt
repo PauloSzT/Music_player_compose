@@ -22,15 +22,6 @@ class RawFilesProvider : ContentProvider() {
         Uri.parse("$URI_RSC${R.raw.xpress2muzikxpress}"),
     )
 
-    companion object {
-        private const val PROVIDER_NAME = "com.example.music.models/RawFilesProvider"
-        private const val PLAYLIST_PATH = "uriList"
-        val CONTENT_URI: Uri = Uri.parse("content://$PROVIDER_NAME/$PLAYLIST_PATH")
-        private const val PACKAGE_NAME = "com.android.example.music"
-        const val URI_RSC = "android.resource://$PACKAGE_NAME/"
-        const val URI = "URI_PATH"
-    }
-
     override fun onCreate(): Boolean {
         return true
     }
@@ -63,5 +54,14 @@ class RawFilesProvider : ContentProvider() {
 
     override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
         throw UnsupportedOperationException("Not supported")
+    }
+
+    companion object {
+        private const val PROVIDER_NAME = "com.example.music.models/RawFilesProvider"
+        private const val PLAYLIST_PATH = "uriList"
+        val CONTENT_URI: Uri = Uri.parse("content://$PROVIDER_NAME/$PLAYLIST_PATH")
+        private const val PACKAGE_NAME = "com.android.example.music"
+        const val URI_RSC = "android.resource://$PACKAGE_NAME/"
+        const val URI = "URI_PATH"
     }
 }
