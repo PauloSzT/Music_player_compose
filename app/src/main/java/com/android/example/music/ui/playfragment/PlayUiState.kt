@@ -7,5 +7,8 @@ data class PlayUiState(
     val song: StateFlow<Song?>,
     val isPlaying: StateFlow<Boolean>,
     val seekbarPosition: StateFlow<Pair<Float, Float>>,
-    val onSeekbarChange: (Float) -> Unit
+    val onSeekbarChange: (Float) -> Unit,
+    val pauseOrResume: () -> Unit,
+    val skipPrev: () -> Unit,
+    val skipNext: () -> Unit
 )

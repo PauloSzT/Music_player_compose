@@ -27,8 +27,8 @@ fun MusicSeekbar(
         modifier = Modifier.width(200.dp),
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colorScheme.inversePrimary,
-            activeTrackColor = MaterialTheme.colorScheme.onSecondary,
-            inactiveTrackColor = MaterialTheme.colorScheme.onPrimaryContainer
+            activeTrackColor = MaterialTheme.colorScheme.onBackground,
+            inactiveTrackColor = MaterialTheme.colorScheme.primary
         )
     )
 }

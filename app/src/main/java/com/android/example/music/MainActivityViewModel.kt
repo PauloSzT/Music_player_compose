@@ -5,7 +5,6 @@ import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.example.music.broadcast.MusicBroadcastReceiver
@@ -47,103 +46,30 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     private val _isLoading = MutableStateFlow(false)
     private val isLoading = _isLoading.asStateFlow()
 
-
     val homeUiState = HomeUiState(
         songsList = playlist,
         isShuffle = isShuffle,
         isLoading = isLoading,
         onShuffleIconToggled = ::toggleShuffle,
+        playSong = ::playSong,
+        playList = ::playList,
         refresh = ::refresh
     )
-    val playUiState = PlayUiState(currentSong, isPlaying, seekbarPosition, ::onSeekbarChange)
-    val settingsUiState = SettingsUiState(songsList, isLoading, ::refresh)
-
-    private fun toggleShuffle() {
-        isShuffle.value = !isShuffle.value
-    }
-
-    fun addSongOrRemove(songIndex: Int) {
-        songsList.update { songs ->
-            songs.mapIndexed { index, song ->
-                if (index == songIndex) {
-                    Song(
-                        song.path,
-                        song.name,
-                        !song.isInPlaylist
-                    )
-                }else{
-                    song
-                }
-            }
-        }
-    }
-
-    /** Play the playlist on HomeView */
-    fun playList(): Int {
-        return if (isShuffle.value) {
-            val random = (playlist.value.indices).random()
-            playSong(random)
-            mediaPlayer.setOnCompletionListener {
-                val randomNext = (playlist.value.indices).random()
-                playSong(randomNext)
-            }
-            random
-        } else {
-            playSong(0)
-            mediaPlayer.setOnCompletionListener { playSong(currentSongIndex + 1) }
-            0
-        }
-    }
-
-    fun skipNext() {
-        if (isShuffle.value) {
-            val random = (playlist.value.indices).random()
-            playSong(random)
-            currentSong.value = playlist.value[random]
-        } else {
-            if (currentSongIndex == playlist.value.size - 1) {
-                playSong(0)
-                currentSong.value = playlist.value[0]
-            } else {
-                playSong(currentSongIndex + 1)
-                currentSong.value = playlist.value[currentSongIndex]
-            }
-        }
-    }
-
-    fun skipPrev() {
-        if (currentSongIndex == 0) {
-            playSong(playlist.value.size - 1)
-            currentSong.value = playlist.value[playlist.value.size - 1]
-        } else {
-            playSong(currentSongIndex - 1)
-            currentSong.value = playlist.value[currentSongIndex]
-        }
-    }
-
-    fun pauseOrResumeCurrentSong() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            isPlaying.value = false
-        } else {
-            mediaPlayer.start()
-            isPlaying.value = true
-        }
-    }
-
-    /** Main Fun to Play a Song */
-    fun playSong(songIndex: Int) {
-        destroyPlayer()
-        mediaPlayer.setDataSource(application, Uri.parse(playlist.value[songIndex].path))
-        mediaPlayer.prepare()
-        mediaPlayer.setVolume(1.0f, 1.0f)
-        mediaPlayer.start()
-        currentSongIndex = songIndex
-        sendBroadcast(playlist.value[currentSongIndex].name)
-        currentSong.value = playlist.value[currentSongIndex]
-        initializeSeekBar()
-        isPlaying.value = true
-    }
+    val playUiState = PlayUiState(
+        song = currentSong,
+        isPlaying = isPlaying,
+        seekbarPosition = seekbarPosition,
+        onSeekbarChange = ::onSeekbarChange,
+        pauseOrResume = ::pauseOrResumeCurrentSong,
+        skipPrev = ::skipPrev,
+        skipNext = ::skipNext
+    )
+    val settingsUiState = SettingsUiState(
+        songList = songsList,
+        isLoading = isLoading,
+        refresh = ::refresh,
+        addOrRemove = ::addSongOrRemove
+    )
 
     /** Main fun to collect the List from Provider. */
     fun initializePlayer() {
@@ -161,6 +87,89 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
             )
         }
         songsList.value = list
+    }
+
+    /** Main Fun to Play a Song */
+    private fun playSong(songIndex: Int) {
+        destroyPlayer()
+        mediaPlayer.setDataSource(application, Uri.parse(playlist.value[songIndex].path))
+        mediaPlayer.prepare()
+        mediaPlayer.setVolume(1.0f, 1.0f)
+        mediaPlayer.start()
+        currentSongIndex = songIndex
+        sendBroadcast(playlist.value[currentSongIndex].name)
+        currentSong.value = playlist.value[currentSongIndex]
+        initializeSeekBar()
+        isPlaying.value = true
+    }
+
+    /** Play the playlist on HomeView */
+    private fun playList(): Int {
+        return if (isShuffle.value) {
+            val random = (playlist.value.indices).random()
+            playSong(random)
+            mediaPlayer.setOnCompletionListener {
+                val randomNext = (playlist.value.indices).random()
+                playSong(randomNext)
+            }
+            random
+        } else {
+            playSong(0)
+            mediaPlayer.setOnCompletionListener { playSong(currentSongIndex + 1) }
+            0
+        }
+    }
+
+    private fun pauseOrResumeCurrentSong() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
+            isPlaying.value = false
+        } else {
+            mediaPlayer.start()
+            isPlaying.value = true
+        }
+    }
+
+    private fun addSongOrRemove(songIndex: Int) {
+        songsList.update { songs ->
+            songs.mapIndexed { index, song ->
+                if (index == songIndex) {
+                    Song(
+                        song.path,
+                        song.name,
+                        !song.isInPlaylist
+                    )
+                } else {
+                    song
+                }
+            }
+        }
+    }
+
+    private fun skipNext() {
+        if (isShuffle.value) {
+            val random = (playlist.value.indices).random()
+            playSong(random)
+            currentSong.value = playlist.value[random]
+        } else {
+            if (currentSongIndex == playlist.value.size - 1) {
+                playSong(0)
+                currentSong.value = playlist.value[0]
+            } else {
+                playSong(currentSongIndex + 1)
+                currentSong.value = playlist.value[currentSongIndex]
+            }
+        }
+    }
+
+    private fun skipPrev() {
+        if (currentSongIndex == 0) {
+            playSong(playlist.value.size - 1)
+            currentSong.value = playlist.value[playlist.value.size - 1]
+        } else {
+            playSong(currentSongIndex - 1)
+            currentSong.value = playlist.value[currentSongIndex]
+        }
     }
 
     private fun initializeSeekBar() {
@@ -188,6 +197,10 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
             initializePlayer()
             _isLoading.value = false
         }
+    }
+
+    private fun toggleShuffle() {
+        isShuffle.value = !isShuffle.value
     }
 
     private fun onSeekbarChange(position: Float) {

@@ -9,14 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.android.example.music.ui.homefragment.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_playFragment"
             app:destination="@id/playFragment">
             <argument
                 android:name="songname"
-                app:argType="string"
-                android:defaultValue="null" />
+                android:defaultValue="null"
+                app:argType="string" />
         </action>
         <action
             android:id="@+id/action_homeFragment_to_settingsFragment"
@@ -26,14 +26,14 @@
         android:id="@+id/playFragment"
         android:name="com.android.example.music.ui.playfragment.PlayFragment"
         android:label="fragment_play"
-        tools:layout="@layout/fragment_play" >
+        tools:layout="@layout/fragment_play">
         <action
             android:id="@+id/action_playFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <argument
             android:name="songname"
-            app:argType="string"
-            android:defaultValue="null" />
+            android:defaultValue="null"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

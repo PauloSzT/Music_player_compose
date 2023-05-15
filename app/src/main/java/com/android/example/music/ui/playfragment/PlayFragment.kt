@@ -28,11 +28,6 @@ class PlayFragment : Fragment() {
                     PlayView(
                         playUiState = activityViewModel.playUiState,
                         onSettingsIconClicked = {navigateToSettingsFragment()},
-                        onPlayButtonClicked = {
-                            activityViewModel.pauseOrResumeCurrentSong()
-                        },
-                        onBackwardButtonClicked = {activityViewModel.skipPrev()},
-                        onForwardButtonClicked = {activityViewModel.skipNext()}
                     )
                 }
             }

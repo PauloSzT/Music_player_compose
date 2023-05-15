@@ -22,7 +22,6 @@ import com.android.example.music.ui.theme.NotoSerif
 @Composable
 fun SettingsView(
     settingsUiState: SettingsUiState,
-    onSongClicked: (Int) -> Unit,
 ) {
     val songsList by settingsUiState.songList.collectAsState()
     Refresher(
@@ -48,24 +47,22 @@ fun SettingsView(
                 Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp, horizontal = 8.dp),
-                    text = "Songs List",
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
+                    text = "Songs List:",
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = NotoSerif,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
-                LazyColumn(
-                ) {
+                LazyColumn{
                     songsList.forEachIndexed { index, song ->
                         item {
                             SongRow(
                                 song.name,
                                 isInPlaylist = song.isInPlaylist,
                                 isForSettings = true
-                            ) { onSongClicked(index) }
+                            ) { settingsUiState.addOrRemove(index) }
                         }
                     }
                 }

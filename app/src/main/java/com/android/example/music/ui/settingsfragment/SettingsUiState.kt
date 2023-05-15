@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 data class SettingsUiState (
     val songList: StateFlow<List<Song>>,
     val isLoading: StateFlow<Boolean>,
-    val refresh: () -> Unit
+    val refresh: () -> Unit,
+    val addOrRemove: (Int) -> Unit
 )

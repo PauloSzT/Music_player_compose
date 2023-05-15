@@ -30,14 +30,10 @@ import androidx.compose.ui.unit.dp
 import com.android.example.music.R
 import com.android.example.music.ui.components.MusicSeekbar
 
-
 @Composable
 fun PlayView(
     playUiState: PlayUiState,
     onSettingsIconClicked: () -> Unit,
-    onPlayButtonClicked: () -> Unit,
-    onBackwardButtonClicked: () -> Unit,
-    onForwardButtonClicked: () -> Unit,
 ) {
     val song by playUiState.song.collectAsState()
     val isPlaying by playUiState.isPlaying.collectAsState()
@@ -74,7 +70,7 @@ fun PlayView(
                     )
                 }
             }
-            Divider(modifier = Modifier.size(3.dp), color = MaterialTheme.colorScheme.primary)
+            Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
             Image(
                 modifier = Modifier.height(350.dp),
                 painter = painterResource(R.drawable.music),
@@ -89,7 +85,7 @@ fun PlayView(
             MusicSeekbar(playUiState)
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { onPlayButtonClicked() },
+                onClick = { playUiState.pauseOrResume() },
                 elevation = ButtonDefaults.buttonElevation(10.dp),
             ) {
                 Icon(
@@ -110,7 +106,7 @@ fun PlayView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { onBackwardButtonClicked() },
+                    onClick = { playUiState.skipPrev() },
                     elevation = ButtonDefaults.buttonElevation(10.dp)
                 ) {
                     Icon(
@@ -122,7 +118,7 @@ fun PlayView(
                 }
                 Spacer(modifier = Modifier.width(60.dp))
                 Button(
-                    onClick = { onForwardButtonClicked() },
+                    onClick = { playUiState.skipNext ()},
                     elevation = ButtonDefaults.buttonElevation(10.dp)
                 ) {
                     Icon(

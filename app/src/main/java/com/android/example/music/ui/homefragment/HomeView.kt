@@ -37,7 +37,7 @@ import com.android.example.music.ui.theme.NotoSerif
 fun HomeView(
     homeUiState: HomeUiState,
     onSongClicked: (String, Int) -> Unit,
-    onPlayListButtonClicked: () -> Unit,
+    onPlayListButtonClicked: (Int) -> Unit,
     onSettingsIconClicked: () -> Unit
 ) {
     val playList by homeUiState.songsList.collectAsState()
@@ -69,7 +69,8 @@ fun HomeView(
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     IconButton(
-                        onClick = { onSettingsIconClicked() }, modifier = Modifier.padding(end = 8.dp)
+                        onClick = { onSettingsIconClicked() },
+                        modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_settings),
@@ -78,15 +79,7 @@ fun HomeView(
                     }
                 }
                 Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-                    text = "Songs List",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = NotoSerif,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(48.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -95,8 +88,17 @@ fun HomeView(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Text(
+                        text = "Songs List:",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontFamily = NotoSerif,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.width(48.dp))
                     Button(
-                        onClick = { onPlayListButtonClicked() },
+                        onClick = {
+                            onPlayListButtonClicked(homeUiState.playList())
+                        },
                         elevation = ButtonDefaults.buttonElevation(10.dp)
                     ) {
                         Icon(
@@ -106,7 +108,7 @@ fun HomeView(
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(32.dp))
+                    Spacer(modifier = Modifier.width(26.dp))
                     Button(
                         onClick = { homeUiState.onShuffleIconToggled() },
                         elevation = ButtonDefaults.buttonElevation(10.dp),
@@ -130,15 +132,17 @@ fun HomeView(
                     thickness = 1.dp,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
-                LazyColumn(
-                ) {
+                LazyColumn{
                     playList.forEachIndexed { index, song ->
                         item {
                             SongRow(
                                 song.name,
                                 isInPlaylist = song.isInPlaylist,
                                 isForSettings = false,
-                            ) { onSongClicked(song.name,index) }
+                            ) {
+                                onSongClicked(song.name, index)
+                                homeUiState.playSong(index)
+                            }
                         }
                     }
                 }

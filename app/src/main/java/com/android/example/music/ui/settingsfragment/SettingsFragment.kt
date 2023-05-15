@@ -26,8 +26,6 @@ class SettingsFragment : Fragment() {
                 MusicAppTheme {
                     SettingsView(
                         settingsUiState = activityViewModel.settingsUiState,
-                        onSongClicked = {index ->
-                            activityViewModel.addSongOrRemove(index)}
                     )
                 }
             }

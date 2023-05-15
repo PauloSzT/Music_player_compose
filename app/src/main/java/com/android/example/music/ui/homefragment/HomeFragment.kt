@@ -28,17 +28,12 @@ class HomeFragment : Fragment() {
                     HomeView(
                         homeUiState = activityViewModel.homeUiState,
                         onSongClicked = { name, index ->
-                            activityViewModel.playSong(index)
                             navigateToPlayFragment(name)
                         },
-                        onPlayListButtonClicked = {
-                            val songIndex = activityViewModel.playList()
-                            navigateToPlayFragment(activityViewModel.homeUiState.songsList.value[songIndex].name)
+                        onPlayListButtonClicked = {index ->
+                            navigateToPlayFragment(activityViewModel.homeUiState.songsList.value[index].name)
                         },
-                        onSettingsIconClicked = { navigateToSettingsFragment() },
-                        onShuffleIconToggled = {
-                            activityViewModel.toggleShuffle()
-                        }
+                        onSettingsIconClicked = { navigateToSettingsFragment() }
                     )
                 }
             }
