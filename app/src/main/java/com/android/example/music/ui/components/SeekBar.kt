@@ -8,10 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.android.example.music.ui.playfragment.PlayUiState
-
 
 @Composable
 fun MusicSeekbar(
@@ -22,15 +20,15 @@ fun MusicSeekbar(
 
     Slider(
         value = seekBarValue.first,
-        onValueChange = { newPosition->
+        onValueChange = { newPosition ->
             playUiState.onSeekbarChange(newPosition)
         },
         valueRange = seekBarRange,
         modifier = Modifier.width(200.dp),
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colorScheme.inversePrimary,
-            activeTrackColor = Color.White,
-            inactiveTrackColor = Color.Black
+            activeTrackColor = MaterialTheme.colorScheme.onSecondary,
+            inactiveTrackColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     )
 }

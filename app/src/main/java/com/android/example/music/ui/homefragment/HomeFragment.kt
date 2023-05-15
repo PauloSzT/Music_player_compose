@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,18 +28,16 @@ class HomeFragment : Fragment() {
                     HomeView(
                         homeUiState = activityViewModel.homeUiState,
                         onSongClicked = { name, index ->
-                            activityViewModel.musicPlayer?.playSong(index)
+                            activityViewModel.playSong(index)
                             navigateToPlayFragment(name)
                         },
                         onPlayListButtonClicked = {
-                            activityViewModel.musicPlayer?.let { player ->
-                                val songIndex = player.playList()
-                                navigateToPlayFragment(player.playList[songIndex].name)
-                            }
+                            val songIndex = activityViewModel.playList()
+                            navigateToPlayFragment(activityViewModel.homeUiState.songsList.value[songIndex].name)
                         },
                         onSettingsIconClicked = { navigateToSettingsFragment() },
                         onShuffleIconToggled = {
-                            activityViewModel.musicPlayer?.toggleShuffle()
+                            activityViewModel.toggleShuffle()
                         }
                     )
                 }

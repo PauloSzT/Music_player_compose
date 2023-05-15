@@ -17,6 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Music"
         tools:targetApi="31">
+        <provider
+            android:name=".models.RawFilesProvider"
+            android:authorities="com.example.music.models"
+            android:exported="true"></provider>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -26,10 +30,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".broadcast.MusicBroadcastReceiver"
+        <receiver
+            android:name=".broadcast.MusicBroadcastReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.example.music.MUSIC_BROADCAST"/>
+                <action android:name="com.example.music.MUSIC_BROADCAST" />
             </intent-filter>
         </receiver>
     </application>

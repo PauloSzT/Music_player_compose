@@ -27,7 +27,7 @@ class SettingsFragment : Fragment() {
                     SettingsView(
                         settingsUiState = activityViewModel.settingsUiState,
                         onSongClicked = {index ->
-                            activityViewModel.musicPlayer?.addSongOrRemove(index)}
+                            activityViewModel.addSongOrRemove(index)}
                     )
                 }
             }

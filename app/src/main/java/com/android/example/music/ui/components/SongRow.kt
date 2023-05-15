@@ -22,24 +22,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun SongRow(
     songName: String,
     songIndex: Int,
-    isSelected: MutableStateFlow<Boolean>,
+    isInPlaylist: Boolean,
     isForSettings: Boolean,
     onSongClicked: (Int) -> Unit
 ) {
-    val isInPlaylist by isSelected.collectAsState()
+
     Row(modifier = Modifier
         .clickable { onSongClicked(songIndex) }
         .fillMaxWidth()
         .padding(vertical = 8.dp)
         .background(
-            if (isInPlaylist && isForSettings) Color.Cyan else if (isForSettings) Color.LightGray else Color.Transparent)) {
+            if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.onPrimaryContainer else if (isForSettings) MaterialTheme.colorScheme.onSecondary else Color.Transparent
+        )) {
         Icon(
             painter = painterResource(R.drawable.ic_music),
             contentDescription = null,
         )
         Text(
             text = songName,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall
         )
     }

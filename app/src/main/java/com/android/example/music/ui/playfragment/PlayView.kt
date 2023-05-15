@@ -22,11 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,7 +61,7 @@ fun PlayView(
             ) {
                 Text(
                     text = "Music Media Player",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -77,7 +74,7 @@ fun PlayView(
                     )
                 }
             }
-            Divider(modifier = Modifier.size(3.dp), color = Color.LightGray)
+            Divider(modifier = Modifier.size(3.dp), color = MaterialTheme.colorScheme.primary)
             Image(
                 modifier = Modifier.height(350.dp),
                 painter = painterResource(R.drawable.music),
@@ -85,7 +82,7 @@ fun PlayView(
             )
             Text(
                 text = song?.name ?: "",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
@@ -100,7 +97,7 @@ fun PlayView(
                         id = if (isPlaying) R.drawable.ic_play_arrow else R.drawable.ic_pause_circle
                     ),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -119,7 +116,7 @@ fun PlayView(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_backward),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -131,7 +128,7 @@ fun PlayView(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_forward),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
                 }

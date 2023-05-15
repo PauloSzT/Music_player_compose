@@ -15,7 +15,6 @@ val NotoSerif = FontFamily(
     Font(R.font.notoserifitalic, FontWeight.Light, FontStyle.Italic)
 )
 
-
 val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = NotoSerif,
