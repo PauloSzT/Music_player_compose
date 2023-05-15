@@ -1,6 +1,11 @@
 # Music_player_compose
 Music Player App using JetPack Compose
 
+## Screenshots
+![image](app/src/main/res/drawable/home_screen.jpg)
+![image](app/src/main/res/drawable/play_screen.jpg)
+![image](app/src/main/res/drawable/settings_screen.jpg)
+
 ## Built With
 
 ### Languages
@@ -18,6 +23,9 @@ Music Player App using JetPack Compose
 ### Version controllers
 - ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 - ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+
+### Frameworks
+- Compose
 
 ### Installation
 

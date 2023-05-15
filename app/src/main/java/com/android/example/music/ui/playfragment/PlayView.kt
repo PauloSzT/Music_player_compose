@@ -13,27 +13,34 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.android.example.music.R
-import com.android.example.music.ui.components.SeekBarDemo
-
+import com.android.example.music.ui.components.MusicSeekbar
 
 @Composable
-fun PlayView() {
+fun PlayView(
+    playUiState: PlayUiState,
+    onSettingsIconClicked: () -> Unit,
+) {
+    val song by playUiState.song.collectAsState()
+    val isPlaying by playUiState.isPlaying.collectAsState()
+
+
     Surface(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -50,15 +57,12 @@ fun PlayView() {
             ) {
                 Text(
                     text = "Music Media Player",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
                 IconButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .padding(end = 8.dp)
+                    onClick = { onSettingsIconClicked() }, modifier = Modifier.padding(end = 8.dp)
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_settings),
@@ -66,28 +70,30 @@ fun PlayView() {
                     )
                 }
             }
+            Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
             Image(
-                modifier = Modifier
-                    .height(350.dp),
+                modifier = Modifier.height(350.dp),
                 painter = painterResource(R.drawable.music),
                 contentDescription = null
             )
             Text(
-                text = "songName",
-                color = Color.White,
+                text = song?.name ?: "",
+                color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
-            SeekBarDemo()
+            MusicSeekbar(playUiState)
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { playUiState.pauseOrResume() },
                 elevation = ButtonDefaults.buttonElevation(10.dp),
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_pause_circle),
+                    painter = painterResource(
+                        id = if (isPlaying) R.drawable.ic_pause_circle else R.drawable.ic_play_arrow
+                    ),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -100,25 +106,25 @@ fun PlayView() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { playUiState.skipPrev() },
                     elevation = ButtonDefaults.buttonElevation(10.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_backward),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(60.dp))
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { playUiState.skipNext ()},
                     elevation = ButtonDefaults.buttonElevation(10.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_forward),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
                 }

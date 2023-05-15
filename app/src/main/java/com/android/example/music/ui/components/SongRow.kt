@@ -1,5 +1,6 @@
 package com.android.example.music.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,34 +12,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.example.music.R
-import com.android.example.music.ui.theme.MusicAppTheme
 
 @Composable
-fun SongRow(songName:String, songIndex:Int, onSongClicked: (Int) -> Unit ) {
+fun SongRow(
+    songName: String,
+    isInPlaylist: Boolean,
+    isForSettings: Boolean,
+    onSongClicked: () -> Unit
+) {
+
     Row(modifier = Modifier
-        .clickable { onSongClicked(songIndex) }
+        .clickable { onSongClicked() }
         .fillMaxWidth()
-        .padding( vertical = 8.dp)
-    ) {
+        .padding(vertical = 8.dp)
+        .background(
+            if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.onPrimaryContainer else if (isForSettings) MaterialTheme.colorScheme.onSecondary else Color.Transparent
+        )) {
         Icon(
             painter = painterResource(R.drawable.ic_music),
-            contentDescription = null
+            tint = if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary,
+            contentDescription = null,
         )
         Text(
             text = songName,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall
         )
-    }
-}
-
-@Preview
-@Composable
-fun SongRowPreview(){
-    MusicAppTheme {
-        SongRow("cancion",0) {}
     }
 }

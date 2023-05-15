@@ -14,51 +14,56 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.android.example.music.MainActivityViewModel
+import com.android.example.music.ui.components.Refresher
 import com.android.example.music.ui.components.SongRow
 import com.android.example.music.ui.theme.NotoSerif
 
 @Composable
-fun SettingsView (
-    viewModel: MainActivityViewModel,
-    onSongClicked: (Int) -> Unit
-){
-    val songsList by viewModel.songsList.collectAsState()
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-    ){
-        Column (
+fun SettingsView(
+    settingsUiState: SettingsUiState,
+) {
+    val songsList by settingsUiState.songList.collectAsState()
+    Refresher(
+        isLoadingState = settingsUiState.isLoading,
+        refresh = settingsUiState.refresh
+    ) {
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
-        ){
-            Text(
-                text = "HOME PANEL",
-                fontFamily = NotoSerif,
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
+                .fillMaxSize()
+        ) {
+            Column(
                 modifier = Modifier
-                    .padding(start = 8.dp)
-            )
-            Divider(color = Color.LightGray, thickness = 3.dp)
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                modifier = Modifier
-                    .padding(vertical = 16.dp, horizontal = 8.dp),
-                text = "Songs List",
-                color = Color.White,
-                fontFamily = NotoSerif,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Divider(color = Color.LightGray, thickness = 1.dp)
-            LazyColumn(
+                    .padding(vertical = 8.dp)
             ) {
-                songsList.forEach { song ->
-                    item {
-                        SongRow(song.name, song.index, onSongClicked)
+                Text(
+                    text = "SETTINGS",
+                    fontFamily = NotoSerif,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                )
+                Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
+                    text = "Songs List:",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontFamily = NotoSerif,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
+                LazyColumn{
+                    songsList.forEachIndexed { index, song ->
+                        item {
+                            SongRow(
+                                song.name,
+                                isInPlaylist = song.isInPlaylist,
+                                isForSettings = true
+                            ) { settingsUiState.addOrRemove(index) }
+                        }
                     }
                 }
             }
