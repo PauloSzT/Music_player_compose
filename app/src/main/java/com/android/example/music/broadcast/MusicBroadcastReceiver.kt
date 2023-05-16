@@ -9,11 +9,12 @@ class MusicBroadcastReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent?.action
         if(action == BROADCAST_ACTION){
-            val songName = intent.getStringExtra("songName")
+            val songName = intent.getStringExtra(SONG_NAME)
             Toast.makeText(context,"Now playing $songName",Toast.LENGTH_SHORT).show()
         }
     }
     companion object{
         const val BROADCAST_ACTION = "com.example.music.MUSIC_BROADCAST"
+        const val SONG_NAME = "songName"
     }
 }
