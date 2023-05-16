@@ -30,7 +30,8 @@ fun SettingsView(
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
             Column(
                 modifier = Modifier
@@ -39,7 +40,7 @@ fun SettingsView(
                 Text(
                     text = "SETTINGS",
                     fontFamily = NotoSerif,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .padding(start = 8.dp)
@@ -49,13 +50,13 @@ fun SettingsView(
                 Text(
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp),
                     text = "Songs List:",
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontFamily = NotoSerif,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Divider(color = MaterialTheme.colorScheme.primary, thickness = 1.dp)
-                LazyColumn{
+                Divider(color = MaterialTheme.colorScheme.onBackground, thickness = 1.dp)
+                LazyColumn {
                     songsList.forEachIndexed { index, song ->
                         item {
                             SongRow(

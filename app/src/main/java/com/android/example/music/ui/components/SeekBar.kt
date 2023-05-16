@@ -14,6 +14,7 @@ import com.android.example.music.ui.playfragment.PlayUiState
 @Composable
 fun MusicSeekbar(
     playUiState: PlayUiState,
+    modifier: Modifier = Modifier
 ) {
     val seekBarValue by playUiState.seekbarPosition.collectAsState()
     val seekBarRange = 0f..seekBarValue.second
@@ -24,11 +25,11 @@ fun MusicSeekbar(
             playUiState.onSeekbarChange(newPosition)
         },
         valueRange = seekBarRange,
-        modifier = Modifier.width(200.dp),
+        modifier = modifier.width(200.dp),
         colors = SliderDefaults.colors(
             thumbColor = MaterialTheme.colorScheme.inversePrimary,
-            activeTrackColor = MaterialTheme.colorScheme.onBackground,
-            inactiveTrackColor = MaterialTheme.colorScheme.primary
+            activeTrackColor = MaterialTheme.colorScheme.primary,
+            inactiveTrackColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }

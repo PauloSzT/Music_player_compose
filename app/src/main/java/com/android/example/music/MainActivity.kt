@@ -2,6 +2,7 @@ package com.android.example.music
 
 import android.annotation.SuppressLint
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -21,13 +22,17 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory = MainActivityViewModelFactory(application)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
-        viewModel.initializePlayer()
+//        viewModel.collectList()
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    fun initializeBroadcastReceiver() {
+@SuppressLint("UnspecifiedRegisterReceiverFlag")
+private fun initializeBroadcastReceiver() {
         val filter = IntentFilter(BROADCAST_ACTION)
-        this.registerReceiver(MusicBroadcastReceiver(), filter)
+        if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.TIRAMISU){
+            this.registerReceiver(MusicBroadcastReceiver(), filter)
+            return
+        }
+    this.registerReceiver(MusicBroadcastReceiver(), filter, RECEIVER_NOT_EXPORTED)
     }
 
     companion object {
