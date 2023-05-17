@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory = MainActivityViewModelFactory(application)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
-//        viewModel.collectList()
     }
 
 @SuppressLint("UnspecifiedRegisterReceiverFlag")

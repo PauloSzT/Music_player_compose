@@ -5,7 +5,6 @@ import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.example.music.broadcast.MusicBroadcastReceiver
@@ -18,7 +17,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -44,7 +42,6 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     private val isPlaying = MutableStateFlow(false)
     private val isShuffle = MutableStateFlow(false)
     private val isLoading = MutableStateFlow(false)
-//    private val isLoading = _isLoading.asStateFlow()
 
     init {
         collectList()
