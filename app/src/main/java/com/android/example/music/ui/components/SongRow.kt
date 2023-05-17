@@ -28,16 +28,16 @@ fun SongRow(
         .fillMaxWidth()
         .padding(vertical = 8.dp)
         .background(
-            if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.onPrimaryContainer else if (isForSettings) MaterialTheme.colorScheme.onSecondary else Color.Transparent
+            if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.primaryContainer else if (isForSettings) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
         )) {
         Icon(
             painter = painterResource(R.drawable.ic_music),
-            tint = if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary,
+            tint = if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
             contentDescription = null,
         )
         Text(
             text = songName,
-            color = if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primary,
+            color = if (isInPlaylist && isForSettings) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.bodySmall
         )
     }

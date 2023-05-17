@@ -17,7 +17,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -27,7 +26,7 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var isSeekBarRunning = false
-    private var currentSongIndex: Int = 0
+    private var currentSongIndex: Int = INITIALIZE_INDEX
 
     private val songProvider: SongProvider = SongProvider(application.contentResolver)
     private val songsList = MutableStateFlow<List<Song>>(emptyList())
@@ -38,13 +37,15 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
             viewModelScope,
             SharingStarted.Lazily, emptyList()
         )
-
     private val seekbarPosition = MutableStateFlow(Pair(0f, 0f))
     private val currentSong = MutableStateFlow<Song?>(null)
     private val isPlaying = MutableStateFlow(false)
     private val isShuffle = MutableStateFlow(false)
-    private val _isLoading = MutableStateFlow(false)
-    private val isLoading = _isLoading.asStateFlow()
+    private val isLoading = MutableStateFlow(false)
+
+    init {
+        collectList()
+    }
 
     val homeUiState = HomeUiState(
         songsList = playlist,
@@ -71,8 +72,10 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
         addOrRemove = ::addSongOrRemove
     )
 
-    /** Main fun to collect the List from Provider. */
-    fun initializePlayer() {
+    /**
+     * Main fun to collect the List from Provider.
+     */
+    private fun collectList() {
         val list = songProvider.getSongsList().mapIndexed { index, item ->
             val metadataRetriever = MediaMetadataRetriever()
             val uri = Uri.parse(item)
@@ -89,12 +92,11 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
         songsList.value = list
     }
 
-    /** Main Fun to Play a Song */
     private fun playSong(songIndex: Int) {
         destroyPlayer()
         mediaPlayer.setDataSource(application, Uri.parse(playlist.value[songIndex].path))
         mediaPlayer.prepare()
-        mediaPlayer.setVolume(1.0f, 1.0f)
+        mediaPlayer.setVolume(VOLUME_LEVEL , VOLUME_LEVEL)
         mediaPlayer.start()
         currentSongIndex = songIndex
         sendBroadcast(playlist.value[currentSongIndex].name)
@@ -114,7 +116,7 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
             }
             random
         } else {
-            playSong(0)
+            playSong(INITIALIZE_INDEX)
             mediaPlayer.setOnCompletionListener { playSong(currentSongIndex + 1) }
             0
         }
@@ -153,8 +155,8 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
             currentSong.value = playlist.value[random]
         } else {
             if (currentSongIndex == playlist.value.size - 1) {
-                playSong(0)
-                currentSong.value = playlist.value[0]
+                playSong(INITIALIZE_INDEX)
+                currentSong.value = playlist.value[INITIALIZE_INDEX]
             } else {
                 playSong(currentSongIndex + 1)
                 currentSong.value = playlist.value[currentSongIndex]
@@ -163,7 +165,7 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     }
 
     private fun skipPrev() {
-        if (currentSongIndex == 0) {
+        if (currentSongIndex == INITIALIZE_INDEX) {
             playSong(playlist.value.size - 1)
             currentSong.value = playlist.value[playlist.value.size - 1]
         } else {
@@ -186,16 +188,16 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
     private fun sendBroadcast(songName: String) {
         val intent = Intent(application, MusicBroadcastReceiver::class.java)
         intent.action = BROADCAST_ACTION
-        intent.putExtra("songName", songName)
+        intent.putExtra(SONG_NAME_KEY , songName)
         application.sendBroadcast(intent)
     }
 
     private fun refresh() {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoading.value = true
             delay(2000)
-            initializePlayer()
-            _isLoading.value = false
+            collectList()
+            isLoading.value = false
         }
     }
 
@@ -214,5 +216,8 @@ class MainActivityViewModel(private val application: Application) : ViewModel() 
 
     companion object {
         const val BROADCAST_ACTION = "com.example.music.MUSIC_BROADCAST"
+        const val SONG_NAME_KEY = "songName"
+        const val VOLUME_LEVEL = 1.0f
+        const val INITIALIZE_INDEX = 0
     }
 }

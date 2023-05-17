@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,9 +40,9 @@ fun PlayView(
     val song by playUiState.song.collectAsState()
     val isPlaying by playUiState.isPlaying.collectAsState()
 
-
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier
@@ -57,7 +59,7 @@ fun PlayView(
             ) {
                 Text(
                     text = "Music Media Player",
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 8.dp)
                 )
@@ -70,23 +72,35 @@ fun PlayView(
                     )
                 }
             }
-            Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
+            Divider(color = MaterialTheme.colorScheme.onBackground, thickness = 3.dp)
             Image(
-                modifier = Modifier.height(350.dp),
+                modifier = Modifier
+                    .fillMaxHeight(0.4f)
+                    .aspectRatio(4f),
                 painter = painterResource(R.drawable.music),
                 contentDescription = null
             )
             Text(
+                modifier = Modifier.fillMaxHeight(0.15f),
                 text = song?.name ?: "",
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
-            MusicSeekbar(playUiState)
+            Spacer(modifier = Modifier.height(24.dp))
+            MusicSeekbar(
+                playUiState,
+                modifier = Modifier.fillMaxHeight(0.1f),
+            )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { playUiState.pauseOrResume() },
                 elevation = ButtonDefaults.buttonElevation(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                modifier = Modifier.fillMaxHeight(0.25f),
             ) {
                 Icon(
                     painter = painterResource(
@@ -101,13 +115,18 @@ fun PlayView(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .fillMaxHeight(0.6f)
                     .height(48.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
                     onClick = { playUiState.skipPrev() },
-                    elevation = ButtonDefaults.buttonElevation(10.dp)
+                    elevation = ButtonDefaults.buttonElevation(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    )
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_backward),
@@ -118,8 +137,12 @@ fun PlayView(
                 }
                 Spacer(modifier = Modifier.width(60.dp))
                 Button(
-                    onClick = { playUiState.skipNext ()},
-                    elevation = ButtonDefaults.buttonElevation(10.dp)
+                    onClick = { playUiState.skipNext() },
+                    elevation = ButtonDefaults.buttonElevation(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    )
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_forward),

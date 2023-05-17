@@ -27,7 +27,7 @@ class HomeFragment : Fragment() {
                 MusicAppTheme {
                     HomeView(
                         homeUiState = activityViewModel.homeUiState,
-                        onSongClicked = { name, index ->
+                        onSongClicked = { name, _ ->
                             navigateToPlayFragment(name)
                         },
                         onPlayListButtonClicked = {index ->

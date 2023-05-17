@@ -25,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.example.music.R
@@ -47,7 +46,8 @@ fun HomeView(
         refresh = homeUiState.refresh
     ) {
         Surface(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
             Column(
                 modifier = Modifier
@@ -64,7 +64,7 @@ fun HomeView(
                     Text(
                         text = "HOME PANEL",
                         fontFamily = NotoSerif,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -78,7 +78,7 @@ fun HomeView(
                         )
                     }
                 }
-                Divider(color = MaterialTheme.colorScheme.primary, thickness = 3.dp)
+                Divider(color = MaterialTheme.colorScheme.onBackground, thickness = 3.dp)
                 Spacer(modifier = Modifier.height(48.dp))
                 Row(
                     modifier = Modifier
@@ -90,16 +90,18 @@ fun HomeView(
                 ) {
                     Text(
                         text = "Songs List:",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontFamily = NotoSerif,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.width(48.dp))
                     Button(
-                        onClick = {
-                            onPlayListButtonClicked(homeUiState.playList())
-                        },
-                        elevation = ButtonDefaults.buttonElevation(10.dp)
+                        onClick = {onPlayListButtonClicked(homeUiState.playList())},
+                        elevation = ButtonDefaults.buttonElevation(10.dp),
+                        colors = buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        )
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_playlist),
@@ -114,21 +116,19 @@ fun HomeView(
                         elevation = ButtonDefaults.buttonElevation(10.dp),
                         colors = buttonColors(
                             containerColor = if (isShuffle) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-                            contentColor = Color.White,
-                            disabledContainerColor = Color.Red,
-                            disabledContentColor = Color.Red
+                            contentColor = if (isShuffle) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
                         )
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_shuffle),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = if (isShuffle) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(32.dp)
                         )
                     }
                 }
                 Divider(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onBackground,
                     thickness = 1.dp,
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
